@@ -38,7 +38,7 @@
 
 	<!-- 1. Hero — one polaroid-framed photo of Glory, her name in Corinthia, one tagline -->
 	<section class="hero">
-		<div class="polaroid"><img class="ph" src="/assets/images/me/14.jpg" alt="Glory"></div>
+		<div class="tilt-wrap"><div class="polaroid" style="--rot:-2deg;--ty:0px;"><img class="ph" src="/assets/images/me/14.jpg" alt="Glory"></div></div>
 		<h1>Glory</h1>
 		<p>A little corner of the internet, built around one favorite person.</p>
 	</section>
@@ -48,18 +48,21 @@
 		<p class="eyebrow">A few words</p>
 		<p>Quick to laugh. Quicker to notice when something's beautiful.</p>
 		<p>Always chasing good light for a photo of her own.</p>
+		<p>Jesus loves you, turn to him before it's too late &hearts;</p>
 	</section>
 
 	<!-- 3. Gallery — scattered polaroids, every confirmed photo of Glory from /assets/images/me/
 	     (4.jpg and 5.jpg were 2x2 collage grids, not single photos, and were dropped per the user;
-	     15.jpg added afterward as a fourth photo) -->
+	     15.jpg added afterward as a fourth photo). Each --rot/--ty matches this grid's original
+	     nth-child tilt values (see docs/afedia-redesign-build-brief.md v5 motion pass) — now set
+	     inline per photo so main.js can read them for the hover-tilt and scroll-stagger effects. -->
 	<section class="gallery">
 		<h2>A few of my favorites.</h2>
 		<div class="scatter" id="gallery">
-			<figure class="polaroid"><img class="ph" src="/assets/images/me/8.jpg" alt="Glory"></figure>
-			<figure class="polaroid"><img class="ph" src="/assets/images/me/13.jpg" alt="Glory"></figure>
-			<figure class="polaroid"><img class="ph" src="/assets/images/me/14.jpg" alt="Glory"></figure>
-			<figure class="polaroid"><img class="ph" src="/assets/images/me/15.jpg" alt="Glory"></figure>
+			<div class="tilt-wrap"><figure class="polaroid" style="--rot:-3deg;--ty:0px;"><img class="ph" src="/assets/images/me/8.jpg" alt="Glory"></figure></div>
+			<div class="tilt-wrap"><figure class="polaroid" style="--rot:2deg;--ty:10px;"><img class="ph" src="/assets/images/me/13.jpg" alt="Glory"></figure></div>
+			<div class="tilt-wrap"><figure class="polaroid" style="--rot:-1.5deg;--ty:-6px;"><img class="ph" src="/assets/images/me/14.jpg" alt="Glory"></figure></div>
+			<div class="tilt-wrap"><figure class="polaroid" style="--rot:3deg;--ty:14px;"><img class="ph" src="/assets/images/me/15.jpg" alt="Glory"></figure></div>
 		</div>
 	</section>
 

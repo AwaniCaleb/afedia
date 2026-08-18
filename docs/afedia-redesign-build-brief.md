@@ -27,6 +27,73 @@ Everything else from the v3 brief below still applies — this section only cove
 
 ---
 
+## MOTION PASS (v5) — two effects approved, add these on top of everything above
+
+Two motion ideas were prototyped and approved. A third (an envelope-opening intro animation for the private page) was considered and explicitly rejected — the user was concerned about making it responsive across screen sizes given the letter's length, so **do not build the envelope effect.**
+
+### 1. Scroll stagger — applies to the public gallery grid AND the private "moments" grid
+
+As each polaroid scrolls into view, it should fade in and settle into its final tilted position, staggered slightly per item, rather than just appearing. Use an IntersectionObserver. Reference implementation:
+
+```css
+.scatter .polaroid{
+  opacity:0;
+  transform:translateY(40px) rotate(0deg);
+  transition:opacity 0.7s ease, transform 0.7s cubic-bezier(.22,1,.36,1);
+}
+.scatter .polaroid.in-view{opacity:1;}
+/* then per nth-child, set the .in-view transform to translateY(0) rotate(<that item's existing tilt angle>) */
+```
+
+```js
+const items = document.querySelectorAll('.scatter .polaroid');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.style.transitionDelay = (Array.from(items).indexOf(entry.target) * 0.12) + 's';
+      entry.target.classList.add('in-view');
+    }
+  });
+}, { threshold: 0.3 });
+items.forEach(el => io.observe(el));
+```
+
+Adapt the transform values to match each grid's existing per-item rotation angles (already defined via `nth-child` in both pages) rather than hardcoding new ones.
+
+### 2. 3D hover tilt — applies to every polaroid photo site-wide, including both hero photos
+
+On mouse movement over a polaroid, it should tilt in real 3D (perspective + rotateX/rotateY) tracking cursor position, like the photo is being picked up and turned in light. Reverts smoothly on mouse-leave. Reference implementation:
+
+```css
+.tilt-wrap{perspective:800px;}
+.tilt-wrap .polaroid{transition:transform 0.15s ease-out, box-shadow 0.15s ease-out; cursor:pointer;}
+.tilt-wrap .polaroid:hover{box-shadow:0 22px 40px var(--frame-shadow);}
+```
+
+```js
+document.querySelectorAll('.tilt-wrap').forEach(wrap => {
+  const card = wrap.querySelector('.polaroid');
+  const baseRotate = /* that item's existing rotation angle, in degrees */ 0;
+  wrap.addEventListener('mousemove', (e) => {
+    const rect = wrap.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `rotate(${baseRotate}deg) perspective(800px) rotateY(${x * 18}deg) rotateX(${-y * 18}deg) scale(1.05)`;
+  });
+  wrap.addEventListener('mouseleave', () => {
+    card.style.transform = `rotate(${baseRotate}deg)`;
+  });
+});
+```
+
+Every existing `.polaroid` element needs to be wrapped in a `.tilt-wrap` div (or the equivalent perspective container) for this to work — this touches markup on both pages, not just CSS/JS. Preserve each photo's existing base rotation angle as `baseRotate` so the tilt effect starts from its current scattered position rather than resetting it to straight.
+
+Both effects should feel subtle and quick (short durations, no bounce/overshoot) — this is a quiet, sincere site, not a flashy one. If either effect ends up feeling like "too much" once built, flag it rather than tuning it further unilaterally.
+
+---
+
+## 0. Concept (unchanged from v2, still correct)
+
 "Afedia" is Glory's surname. The site is a tribute gallery about her, built by someone who admires her — not a photography portfolio, not written in first person as "I'm a passionate photographer." She isn't a photographer; she likes taking photos of herself and of sceneries she finds beautiful. The public site showcases her. The private page (`oloigbe.html`) is the personal letter plus photos of the two of them together.
 
 ## 1. Visual Direction — "Soft & intimate"

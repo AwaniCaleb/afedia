@@ -66,8 +66,30 @@ header {
 	background: var(--frame);
 	padding: 14px 14px 40px;
 	box-shadow: 0 10px 24px var(--frame-shadow);
-	transform: rotate(-2deg);
+	/* --rot/--ty are set inline per photo — the single source of truth for its
+	   tilt, read by the hover-tilt and scroll-stagger JS too (see main.js). */
+	transform: translateY(var(--ty, 0px)) rotate(var(--rot, 0deg));
 	margin-bottom: 1.5rem;
+}
+
+/* ---- Motion: 3D hover tilt, every polaroid site-wide (v5) ----
+   Every .polaroid is wrapped in a .tilt-wrap for perspective + mousemove
+   tracking (see main.js). This is the only place `transform`'s transition
+   speed is declared for interactive changes — the scroll-stagger entrance
+   below uses inline transitionDuration overrides instead of its own CSS
+   transition, so the two effects don't fight over the same property. */
+.tilt-wrap {
+	display: inline-block;
+	perspective: 800px;
+}
+
+.tilt-wrap .polaroid {
+	transition: opacity 0.15s ease-out, transform 0.15s ease-out, box-shadow 0.15s ease-out;
+	cursor: pointer;
+}
+
+.tilt-wrap .polaroid:hover {
+	box-shadow: 0 22px 40px var(--frame-shadow);
 }
 
 .polaroid .ph {
@@ -145,11 +167,15 @@ img.ph {
 	justify-items: center;
 }
 
+.scatter .tilt-wrap {
+	width: 100%;
+	max-width: 340px;
+}
+
 .scatter .polaroid {
 	padding: 16px 16px 44px;
 	margin: 0;
 	width: 100%;
-	max-width: 340px;
 }
 
 .scatter .polaroid .ph {
@@ -158,31 +184,25 @@ img.ph {
 	font-size: 12px;
 }
 
-.scatter .polaroid:nth-child(1) {
-	transform: rotate(-3deg);
-}
-
-.scatter .polaroid:nth-child(2) {
-	transform: rotate(2deg) translateY(10px);
-}
-
-.scatter .polaroid:nth-child(3) {
-	transform: rotate(-1.5deg) translateY(-6px);
-}
-
-.scatter .polaroid:nth-child(4) {
-	transform: rotate(3deg) translateY(14px);
-}
-
-.scatter .polaroid:nth-child(5) {
-	transform: rotate(-2.5deg);
-}
-
 @media (max-width: 640px) {
 	.scatter {
 		grid-template-columns: 1fr;
 		max-width: 340px;
 	}
+}
+
+/* ---- Motion: scroll-stagger entrance (v5) ----
+   Each photo's resting --rot/--ty (set inline in the markup) is applied by
+   main.js once it scrolls into view, via a temporary transitionDuration
+   override — see the note on .tilt-wrap above for why this isn't a plain
+   CSS transition on this rule. */
+.scatter .polaroid {
+	opacity: 0;
+	transform: translateY(40px) rotate(0deg);
+}
+
+.scatter .polaroid.in-view {
+	opacity: 1;
 }
 
 figcaption {

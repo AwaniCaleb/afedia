@@ -39,11 +39,18 @@
     background:var(--frame);
     padding:14px 14px 40px;
     box-shadow:0 10px 24px var(--frame-shadow);
-    transform:rotate(-2deg);
+    /* --rot/--ty are set inline per photo — single source of truth for its
+       tilt, read by the hover-tilt/scroll-stagger script below too. */
+    transform:translateY(var(--ty,0px)) rotate(var(--rot,0deg));
     margin-bottom:1.5rem;
   }
   .polaroid .ph{width:300px;aspect-ratio:4/5;background:#EFE6DC;display:flex;align-items:center;justify-content:center;color:var(--muted);font-style:italic;font-size:12px;text-align:center;padding:1rem;}
   img.ph{display:block;padding:0;object-fit:cover;}
+
+  /* ---- Motion: 3D hover tilt, every polaroid (v5) ---- */
+  .tilt-wrap{display:inline-block;perspective:800px;}
+  .tilt-wrap .polaroid{transition:opacity 0.15s ease-out, transform 0.15s ease-out, box-shadow 0.15s ease-out;cursor:pointer;}
+  .tilt-wrap .polaroid:hover{box-shadow:0 22px 40px var(--frame-shadow);}
   .hero p.caption{
     font-family:"Corinthia",cursive;
     font-weight:700;
@@ -74,15 +81,19 @@
     margin:0 auto;
     justify-items:center;
   }
-  .scatter .polaroid{padding:16px 16px 44px;margin:0;width:100%;max-width:340px;}
+  .scatter .tilt-wrap{width:100%;max-width:340px;}
+  .scatter .polaroid{padding:16px 16px 44px;margin:0;width:100%;}
   .scatter .polaroid .ph{width:100%;aspect-ratio:4/5;font-size:12px;}
-  .scatter .polaroid:nth-child(1){transform:rotate(-3deg);}
-  .scatter .polaroid:nth-child(2){transform:rotate(2deg) translateY(10px);}
-  .scatter .polaroid:nth-child(3){transform:rotate(-1.5deg) translateY(-6px);}
-  .scatter .polaroid:nth-child(4){transform:rotate(3deg) translateY(14px);}
   @media (max-width:640px){
     .scatter{grid-template-columns:1fr;max-width:340px;}
   }
+
+  /* ---- Motion: scroll-stagger entrance (v5) ----
+     Resting --rot/--ty applied via a temporary transitionDuration override
+     in the script below, not a plain CSS transition here — see the note
+     on .tilt-wrap in the public site's src/style.css for why. */
+  .scatter .polaroid{opacity:0;transform:translateY(40px) rotate(0deg);}
+  .scatter .polaroid.in-view{opacity:1;}
 
   .end{text-align:center;padding:2rem 6vw 4rem;color:var(--blue);font-family:"Corinthia",cursive;font-size:2.1rem;}
 </style>
@@ -93,7 +104,7 @@
   <section class="hero">
     <!-- TODO(photo): drop a real photo of the two of you in public/assets/images/glory/
          and swap this placeholder for <img class="ph" src="/assets/images/glory/hero.jpg" alt=""> -->
-    <div class="polaroid"><div class="ph">photograph — the two of you</div></div>
+    <div class="tilt-wrap"><div class="polaroid" style="--rot:-2deg;--ty:0px;"><div class="ph">photograph — the two of you</div></div></div>
     <p class="caption">for the one who locked me up and never let me out.</p>
   </section>
 
@@ -109,21 +120,82 @@
     </div>
   </section>
 
-  <!-- 3. Moments — scattered polaroids, real photos to come -->
+  <!-- 3. Moments — scattered polaroids, real photos to come. Each --rot/--ty
+       matches this grid's original nth-child tilt values (see docs/afedia-
+       redesign-build-brief.md v5 motion pass), now set inline per photo so
+       the script below can read them for the hover-tilt/scroll-stagger effects. -->
   <section class="moments">
     <h2>a few moments, just ours</h2>
     <div class="scatter">
       <!-- TODO(photos): drop real photos of the two of you in public/assets/images/glory/
            (2–6 work well) and swap these placeholders for <figure class="polaroid"><img class="ph" ...></figure> -->
-      <figure class="polaroid"><div class="ph">photo</div></figure>
-      <figure class="polaroid"><div class="ph">photo</div></figure>
-      <figure class="polaroid"><div class="ph">photo</div></figure>
-      <figure class="polaroid"><div class="ph">photo</div></figure>
+      <div class="tilt-wrap"><figure class="polaroid" style="--rot:-3deg;--ty:0px;"><div class="ph">photo</div></figure></div>
+      <div class="tilt-wrap"><figure class="polaroid" style="--rot:2deg;--ty:10px;"><div class="ph">photo</div></figure></div>
+      <div class="tilt-wrap"><figure class="polaroid" style="--rot:-1.5deg;--ty:-6px;"><div class="ph">photo</div></figure></div>
+      <div class="tilt-wrap"><figure class="polaroid" style="--rot:3deg;--ty:14px;"><div class="ph">photo</div></figure></div>
     </div>
   </section>
 
   <!-- 4. Closing line — no footer, no nav, nothing else -->
   <section class="end">for you, only.</section>
+
+  <!-- Motion (v5): 3D hover tilt + scroll-stagger entrance for the moments
+       grid. Inlined rather than pulled from src/main.js — this page stays
+       self-contained by design (see the note on the <style> block above).
+       No envelope-opening effect here; that idea was considered and
+       explicitly rejected. -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.tilt-wrap').forEach((wrap) => {
+        const card = wrap.querySelector('.polaroid');
+        if (!card) return;
+        const style = getComputedStyle(card);
+        const rot = (style.getPropertyValue('--rot') || '0deg').trim();
+        const ty = (style.getPropertyValue('--ty') || '0px').trim();
+        const base = `translateY(${ty}) rotate(${rot})`;
+
+        wrap.addEventListener('mousemove', (e) => {
+          const rect = wrap.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          card.style.transform = `${base} perspective(800px) rotateY(${x * 18}deg) rotateX(${-y * 18}deg) scale(1.05)`;
+        });
+        wrap.addEventListener('mouseleave', () => {
+          card.style.transform = base;
+        });
+      });
+
+      const items = document.querySelectorAll('.scatter .polaroid');
+      if (!items.length) return;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          const index = Array.from(items).indexOf(el);
+          const style = getComputedStyle(el);
+          const rot = (style.getPropertyValue('--rot') || '0deg').trim();
+          const ty = (style.getPropertyValue('--ty') || '0px').trim();
+
+          el.style.transitionDuration = '0.7s';
+          el.style.transitionDelay = (index * 0.12) + 's';
+          el.style.transform = `translateY(${ty}) rotate(${rot})`;
+          el.classList.add('in-view');
+
+          // Both `opacity` and `transform` share this duration/delay, so
+          // either one's transitionend marks "done" — {once:true} would
+          // otherwise get consumed by whichever fires first regardless of
+          // which property it was for, leaving these overrides stuck.
+          el.addEventListener('transitionend', () => {
+            el.style.transitionDuration = '';
+            el.style.transitionDelay = '';
+          }, { once: true });
+
+          io.unobserve(el);
+        });
+      }, { threshold: 0.3 });
+      items.forEach((el) => io.observe(el));
+    });
+  </script>
 
 </body>
 </html>
