@@ -4,7 +4,28 @@
 
 ---
 
-## 0. Concept (unchanged from v2, still correct)
+## REFINEMENT PASS (v4) — read this first, applies on top of your last implementation
+
+You already built the v3 design. The two reference files (`afedia-layout-draft-soft.html`, `afedia-private-draft-soft.html`) have been updated with a round of refinements — re-open both and diff them against what's currently live rather than assuming nothing changed. Summary of what's different:
+
+**Public site:**
+- Header "Afedia" wordmark is now much larger (was small, now ~4.4rem, close to the hero "Glory" size) and colored in the blue accent, not ink.
+- The hero "Glory" headline is now colored in the blue accent (was ink).
+- The About section's "A few words" label is no longer a small italic Fraunces line — it's now a proper Corinthia script heading (~2.6rem), same font family as "Glory," colored blue.
+- The About body copy was rewritten to remove em dashes and shortened to two short plain sentences (see updated section 2 below).
+- The gallery ("A few of my favorites") is no longer a loose flex-wrap scatter — it's now a fixed 2-column CSS grid with noticeably bigger polaroid frames (up to ~340px wide, vs. ~250px before), collapsing to 1 column on mobile. The photos should feel large and worth looking at, not thumbnail-sized.
+- The standalone "Connect" section (plain text links) has been removed entirely. Social links now live behind a small pill-style "Connect" button in the footer, which opens a popup/modal centered on screen showing Instagram/TikTok/Facebook as icon-only circles (outlined, blue accent color, not full-color brand badges — reuse the existing icon SVG paths from the site but restyle them monochrome). This needs a small amount of JS to toggle the modal open/closed.
+- Dark mode: deliberately not being added. It was considered and explicitly rejected — don't implement it, and don't ask about it again unless the user brings it up.
+
+**Private page (`oloigbe.html`):**
+- The hero caption ("for the one who locked me up and never let me out") is now bigger and bold (was 2.4rem regular, now 2.9rem, font-weight 700) for readability — it was hard to read at the old size.
+- The letter text has been revised to remove em dashes throughout — use the updated text in section 3 below exactly, it replaces the previous version.
+- The "moments" section now uses the same 2-column grid / bigger-frame treatment as the public gallery, replacing the old loose scatter.
+- The closing line ("for you, only") is bigger (was 1.6rem, now 2.1rem).
+
+Everything else from the v3 brief below still applies — this section only covers what changed.
+
+---
 
 "Afedia" is Glory's surname. The site is a tribute gallery about her, built by someone who admires her — not a photography portfolio, not written in first person as "I'm a passionate photographer." She isn't a photographer; she likes taking photos of herself and of sceneries she finds beautiful. The public site showcases her. The private page (`oloigbe.html`) is the personal letter plus photos of the two of them together.
 
@@ -60,13 +81,13 @@ Match `afedia-private-draft-soft.html` exactly. No header, no nav, no footer lin
 
 > Glory,
 >
-> I spend most of my time behind this lens looking for something worth keeping — a shape, a shadow, a moment that won't sit still long enough anywhere else. I built a whole gallery out of it.
+> I spend most of my time behind this lens looking for something worth keeping. A shape, a shadow, a moment that won't sit still long enough anywhere else. I built a whole gallery out of it.
 >
-> That gallery is you. Every frame in it, on purpose — because you're the one thing I never get tired of finding, and somehow never tired of looking for. But this page isn't a photograph. It's not something to look at. It's something I've been carrying around for a while, and haven't known how to say out loud.
+> That gallery is you. Every frame in it, on purpose, because you're the one thing I never get tired of finding, and somehow never tired of looking for. But this page isn't a photograph. It's not something to look at. It's something I've been carrying around for a while, and haven't known how to say out loud.
 >
-> We've never really talked about what this is, you and me. Maybe it's easier this way — building you a whole website instead of just telling you outright. But I think you should know: this isn't just admiration, and it isn't just a friendship I've been careful with. It's more than that, and it has been for a while.
+> We've never really talked about what this is, you and me. Maybe it's easier this way, building you a whole website instead of just telling you outright. But I think you should know, this isn't just admiration, and it isn't just a friendship I've been careful with. It's more than that, and it has been for a while.
 >
-> So this page isn't part of the site. It's not linked, not listed, not for anyone else to find. It's just for you, Mrs. Jailer — since you've had me locked up for a while now, and I haven't exactly been trying to argue my way out. I'm not even sure I want to.
+> So this page isn't part of the site. It's not linked, not listed, not for anyone else to find. It's just for you, Mrs. Jailer, since you've had me locked up for a while now, and I haven't exactly been trying to argue my way out. I'm not even sure I want to.
 >
 > — Mr. Jailer
 

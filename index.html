@@ -30,6 +30,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" href="/src/style.css">
+	<script type="module" src="/src/main.js"></script>
 </head>
 
 <body>
@@ -45,9 +46,8 @@
 	<!-- 2. About — text only, no image -->
 	<section class="about center">
 		<p class="eyebrow">A few words</p>
-		<p>Glory is many things before she's ever in front of a camera — quick to laugh, quicker to notice when something's beautiful, and always chasing good light for a photo of her own.</p>
-		<p>This page is a small, standing tribute to her — a handful of the moments that are easiest to love.</p>
-		<p>Jesus loves you, turn to him before it's too late &hearts;</p>
+		<p>Quick to laugh. Quicker to notice when something's beautiful.</p>
+		<p>Always chasing good light for a photo of her own.</p>
 	</section>
 
 	<!-- 3. Gallery — scattered polaroids, every confirmed photo of Glory from /assets/images/me/
@@ -63,12 +63,29 @@
 		</div>
 	</section>
 
-	<!-- 4. Connect — quiet text links, no pill buttons -->
-	<section class="connect">
-		<a href="https://instagram.com/_afedia_/">Instagram</a><span>·</span><a href="https://tiktok.com/@_afedia_">TikTok</a><span>·</span><a href="https://facebook.com/afedia.glory.10">Facebook</a>
-	</section>
+	<!-- 4. Footer — quiet line + a Connect button that opens the social icon modal -->
+	<footer>
+		<p>A small site, made with care.</p>
+		<button class="connect-trigger" id="connectTrigger">Connect</button>
+	</footer>
 
-	<footer>A small site, made with care.</footer>
+	<div class="modal-backdrop" id="connectModal">
+		<div class="modal">
+			<button class="modal-close" id="connectModalClose">&times;</button>
+			<p class="title">Find her here</p>
+			<div class="icon-row">
+				<a href="https://instagram.com/_afedia_/" aria-label="Instagram">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/></svg>
+				</a>
+				<a href="https://tiktok.com/@_afedia_" aria-label="TikTok">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M15 8a4 4 0 0 0 4 4V4h-4"/><line x1="15" y1="4" x2="15" y2="12"/></svg>
+				</a>
+				<a href="https://facebook.com/afedia.glory.10" aria-label="Facebook">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+				</a>
+			</div>
+		</div>
+	</div>
 </body>
 
 </html>
