@@ -4,143 +4,73 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Afedia - Modern Image Gallery</title>
+	<title>Afedia - A Tribute Gallery</title>
 
-	<meta name="description" content="Afedia is a modern one-page image gallery website showcasing high-quality images with a luxurious design, smooth animations, and a responsive layout built with Vite and Tailwind CSS.">
-	<meta name="keywords" content="Afedia, image gallery, modern design, one-page website, sleek, luxurious, Tailwind CSS, Vite, Vercel, responsive, light dark toggle, blue accent">
-  	<meta name="author" content="Your Name">
-  	<link rel="canonical" href="https://afedia.vercel.app/">
+	<meta name="description" content="A small gallery celebrating Glory Afedia — a curated set of photos, and a few words about her.">
+	<meta name="keywords" content="Afedia, Glory, tribute gallery, one-page website">
+	<meta name="author" content="Awani Caleb">
+	<link rel="canonical" href="https://afedia.vercel.app/">
 
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website">
-	<meta property="og:title" content="Afedia - Modern Image Gallery">
-	<meta property="og:description" content="Discover Afedia, an image gallery showcasing stunning images">
+	<meta property="og:title" content="Afedia - A Tribute Gallery">
+	<meta property="og:description" content="A small gallery celebrating Glory Afedia.">
 	<meta property="og:url" content="https://afedia.vercel.app/">
 	<meta property="og:image" content="/assets/images/screenshots/1.png">
 	<meta property="og:site_name" content="Afedia">
-  
+
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="Afedia - Modern Image Gallery">
-	<meta name="twitter:description" content="Explore Afedia, an image gallery of moments captured by me">
+	<meta name="twitter:title" content="Afedia - A Tribute Gallery">
+	<meta name="twitter:description" content="A small gallery celebrating Glory Afedia.">
 	<meta name="twitter:image" content="/assets/images/screenshots/1.png">
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Corinthia:wght@400;700&family=Delius+Swash+Caps&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
-
-	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" href="/src/style.css">
-	<script type="module" src="/src/main.js"></script>
 </head>
 
 <body>
-	<header class="py-6 px-4 md:px-8 flex justify-center items-center">
-		<div class="logo corinthia-regular">Afedia</div>
-	</header>
-	
-	<!-- Inside header -->
-	<!-- <nav>
-		<ul class="flex space-x-6">
-			<li><a href="#" class="hover:text-blue-500 transition-colors">All</a></li>
-			<li><a href="#" class="hover:text-blue-500 transition-colors">Nature</a></li>
-			<li><a href="#" class="hover:text-blue-500 transition-colors">Urban</a></li>
-			<li><a href="#" class="hover:text-blue-500 transition-colors">Abstract</a></li>
-		</ul>
-	</nav> -->
+	<header><div class="wordmark">Afedia</div></header>
 
-	<main class="max-w-7xl mx-auto px-4 py-8 md:px-8">
-		<div class="mb-8">
-			<h1 class="text-3xl md:text-4xl font-bold"><span class="text-accent">Gallery</span> Collection</h1>
-			<p class="text-lg opacity-75 mt-2">Discover my exclusive moments of curated images</p>
+	<!-- 1. Hero — one polaroid-framed photo of Glory, her name in Corinthia, one tagline -->
+	<section class="hero">
+		<!-- TODO(photo): swap for the confirmed hero photo of Glory once filenames are confirmed -->
+		<div class="polaroid"><div class="ph">photograph — portrait</div></div>
+		<h1>Glory</h1>
+		<p>A little corner of the internet, built around one favorite person.</p>
+	</section>
+
+	<!-- 2. About — text only, no image -->
+	<section class="about center">
+		<p class="eyebrow">A few words</p>
+		<p>Glory is many things before she's ever in front of a camera — quick to laugh, quicker to notice when something's beautiful, and always chasing good light for a photo of her own.</p>
+		<p>This page is a small, standing tribute to her — a handful of the moments that are easiest to love.</p>
+		<p>Jesus loves you, turn to him before it's too late &hearts;</p>
+	</section>
+
+	<!-- 3. Gallery — scattered polaroids, every confirmed photo of Glory from /assets/images/me/ -->
+	<section class="gallery">
+		<h2>A few of my favorites.</h2>
+		<div class="scatter" id="gallery">
+			<!-- TODO(photos): waiting on confirmed filenames from /assets/images/me/ before
+			     replacing these placeholders with real <figure class="polaroid"><img class="ph" ...></figure> frames. -->
+			<figure class="polaroid"><div class="ph">photo</div></figure>
+			<figure class="polaroid"><div class="ph">photo</div></figure>
+			<figure class="polaroid"><div class="ph">photo</div></figure>
+			<figure class="polaroid"><div class="ph">photo</div></figure>
+			<figure class="polaroid"><div class="ph">photo</div></figure>
 		</div>
+	</section>
 
-		<div class="gallery-container" id="gallery">
-			<!-- Gallery images will be loaded dynamically -->
-		</div>
+	<!-- 4. Connect — quiet text links, no pill buttons -->
+	<section class="connect">
+		<a href="https://instagram.com/_afedia_/">Instagram</a><span>·</span><a href="https://tiktok.com/@_afedia_">TikTok</a><span>·</span><a href="https://facebook.com/afedia.glory.10">Facebook</a>
+	</section>
 
-		<!-- About Me Section -->
-		<section class="about-section py-12 px-4 md:px-8">
-			<div class="max-w-3xl mx-auto text-center">
-				<h2 class="text-2xl md:text-3xl font-bold mb-6"><span class="text-accent">About</span> Me</h2>
-				<img src="/assets/images/me/10.jpg" alt="Profile Photo"
-					class="w-32 h-32 rounded-full mx-auto mb-6 shadow-lg object-cover">
-				<p class="text-lg mb-4">Born to succeed, I'm <span class="text-accent">Afedia</span>. Passionate photographer capturing the beauty in everyday moments and wonderful creations of God. Explore the world with me through my lens.</p>
-				<p>Jesus loves you, turn to him before it's too late &hearts;</p>
-			</div>
-		</section>
-
-		<div class="social-section py-8 px-4 md:px-8 text-center">
-			<h2 class="text-2xl font-bold mb-4"><span class="text-accent">My</span> Socials</h2>
-			<div class="flex justify-center space-x-6">
-				<a href="https://instagram.com/_afedia_/" class="social-link group" aria-label="Instagram">
-					<div
-						class="bg-gradient-to-br from-purple-500 to-pink-500 p-3 rounded-full transition-transform group-hover:scale-110 flex items-center justify-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-							stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-							class="text-white">
-							<rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-							<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-							<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-						</svg>
-					</div>
-					<span class="block mt-2 text-sm transition-colors group-hover:text-blue-500">Instagram</span>
-				</a>
-
-				<a href="https://tiktok.com/@_afedia_" class="social-link group" aria-label="TikTok">
-					<div class="bg-black p-3 rounded-full transition-transform group-hover:scale-110 flex items-center justify-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-							stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-							class="text-white">
-							<path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"></path>
-							<path d="M15 8a4 4 0 0 0 4 4V4h-4"></path>
-							<line x1="15" y1="4" x2="15" y2="12"></line>
-						</svg>
-					</div>
-					<span class="block mt-2 text-sm transition-colors group-hover:text-blue-500">TikTok</span>
-				</a>
-
-				<a href="https://facebook.com/afedia.glory.10" class="social-link group" aria-label="Facebook">
-					<div class="bg-blue-600 p-3 rounded-full transition-transform group-hover:scale-110 flex items-center justify-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-							stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-							class="text-white">
-							<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-						</svg>
-					</div>
-					<span class="block mt-2 text-sm transition-colors group-hover:text-blue-500">Facebook</span>
-				</a>
-			</div>
-		</div>
-	</main>
-
-	<div class="theme-toggle" id="themeToggle">
-		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-			stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun hidden">
-			<circle cx="12" cy="12" r="5"></circle>
-			<line x1="12" y1="1" x2="12" y2="3"></line>
-			<line x1="12" y1="21" x2="12" y2="23"></line>
-			<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-			<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-			<line x1="1" y1="12" x2="3" y2="12"></line>
-			<line x1="21" y1="12" x2="23" y2="12"></line>
-			<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-			<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-		</svg>
-		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-			stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon">
-			<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-		</svg>
-	</div>
-
-	<footer class="py-6 px-4 md:px-8 text-center opacity-75">
-		<p>© 2025 Afedia. All rights reserved.</p>
-		<p class="text-sm">Made and designed by <a class="underline" href="https://github.com/AwaniCaleb/" target="_blank" rel="noopener noreferrer">Awani Caleb</a></p>
-	</footer>
+	<footer>A small site, made with care.</footer>
 </body>
 
 </html>

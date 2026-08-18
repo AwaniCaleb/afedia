@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Glory — draft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF6F1;
+    --ink:#332A26;
+    --muted:#A4948A;
+    --blue:#7C93B5;
+    --frame:#FFFFFF;
+    --frame-shadow:rgba(51,42,38,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;line-height:1.8;}
+  .center{max-width:600px;margin:0 auto;text-align:center;padding:0 6vw;}
+
+  .hero{padding:4rem 6vw 3rem;text-align:center;}
+  .polaroid{
+    display:inline-block;
+    background:var(--frame);
+    padding:14px 14px 40px;
+    box-shadow:0 10px 24px var(--frame-shadow);
+    transform:rotate(-2deg);
+    margin-bottom:1.5rem;
+  }
+  .polaroid .ph{width:300px;aspect-ratio:4/5;background:#EFE6DC;display:flex;align-items:center;justify-content:center;color:var(--muted);font-style:italic;font-size:12px;text-align:center;padding:1rem;}
+  .hero p.caption{
+    font-family:"Corinthia",cursive;
+    font-size:2.4rem;
+    color:var(--ink);
+    margin:0;
+    max-width:480px;
+    margin:0 auto;
+  }
+
+  .letter{padding:2rem 6vw 4rem;}
+  .letter-inner{
+    max-width:520px;
+    margin:0 auto;
+    font-family:"Fraunces",serif;
+    font-size:1.15rem;
+    text-align:left;
+  }
+  .letter-inner p{margin:0 0 1.2rem;}
+  .letter-inner p.sig{margin-top:2rem;}
+
+  .moments{padding:1rem 6vw 4rem;}
+  .moments h2{font-family:"Fraunces",serif;font-weight:400;font-style:italic;font-size:1.5rem;text-align:center;margin:0 0 2.5rem;color:var(--ink);}
+  .scatter{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:3rem 2.5rem;
+    max-width:1000px;
+    margin:0 auto;
+  }
+  .scatter .polaroid{padding:12px 12px 34px;margin:0;}
+  .scatter .polaroid .ph{width:230px;aspect-ratio:4/5;font-size:11px;}
+  .scatter .polaroid:nth-child(1){transform:rotate(-3deg);}
+  .scatter .polaroid:nth-child(2){transform:rotate(2deg) translateY(10px);}
+  .scatter .polaroid:nth-child(3){transform:rotate(-1.5deg) translateY(-6px);}
+  .scatter .polaroid:nth-child(4){transform:rotate(3deg) translateY(14px);}
+
+  .end{text-align:center;padding:2rem 6vw 4rem;color:var(--muted);font-family:"Corinthia",cursive;font-size:1.6rem;}
+</style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="polaroid"><div class="ph">photograph — the two of you</div></div>
+    <p class="caption">for the one who locked me up and never let me out</p>
+  </section>
+
+  <section class="letter">
+    <div class="letter-inner">
+      <p>Glory,</p>
+      <p>I spend most of my time behind this lens looking for something worth keeping — a shape, a shadow, a moment that won't sit still long enough anywhere else. I built a whole gallery out of it.</p>
+      <p>That gallery is you. Every frame in it, on purpose — because you're the one thing I never get tired of finding, and somehow never tired of looking for. But this page isn't a photograph. It's not something to look at. It's something I've been carrying around for a while, and haven't known how to say out loud.</p>
+      <p>We've never really talked about what this is, you and me. Maybe it's easier this way — building you a whole website instead of just telling you outright. But I think you should know: this isn't just admiration, and it isn't just a friendship I've been careful with. It's more than that, and it has been for a while.</p>
+      <p>So this page isn't part of the site. It's not linked, not listed, not for anyone else to find. It's just for you, Mrs. Jailer — since you've had me locked up for a while now, and I haven't exactly been trying to argue my way out. I'm not even sure I want to.</p>
+      <p class="sig">— Mr. Jailer</p>
+    </div>
+  </section>
+
+  <section class="moments">
+    <h2>a few moments, just ours</h2>
+    <div class="scatter">
+      <figure class="polaroid"><div class="ph">photo</div></figure>
+      <figure class="polaroid"><div class="ph">photo</div></figure>
+      <figure class="polaroid"><div class="ph">photo</div></figure>
+      <figure class="polaroid"><div class="ph">photo</div></figure>
+    </div>
+  </section>
+
+  <section class="end">for you, only</section>
+
+</body>
+</html>

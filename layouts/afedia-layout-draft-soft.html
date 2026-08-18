@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Afedia — soft/intimate draft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF6F1;
+    --ink:#332A26;
+    --muted:#A4948A;
+    --blue:#7C93B5;
+    --frame:#FFFFFF;
+    --frame-shadow:rgba(51,42,38,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;line-height:1.75;}
+  .center{max-width:600px;margin:0 auto;text-align:center;padding:0 6vw;}
+  header{padding:2.5rem 6vw 0.5rem;text-align:center;}
+  .wordmark{font-family:"Corinthia",cursive;font-size:2.2rem;}
+
+  .hero{padding:2rem 6vw 4rem;text-align:center;}
+  .polaroid{
+    display:inline-block;
+    background:var(--frame);
+    padding:14px 14px 40px;
+    box-shadow:0 10px 24px var(--frame-shadow);
+    transform:rotate(-2deg);
+    margin-bottom:1.5rem;
+  }
+  .polaroid .ph{width:280px;aspect-ratio:4/5;background:#EFE6DC;display:flex;align-items:center;justify-content:center;color:var(--muted);font-style:italic;font-size:12px;text-align:center;padding:1rem;}
+  .hero h1{
+    font-family:"Corinthia",cursive;
+    font-size:5rem;
+    margin:0 0 0.3rem;
+    color:var(--ink);
+  }
+  .hero p{color:var(--muted);font-size:1rem;margin:0;}
+
+  .about{padding:2rem 6vw 4rem;}
+  .about p.eyebrow{font-family:"Fraunces",serif;font-style:italic;font-size:1.1rem;color:var(--blue);margin:0 0 1rem;}
+  .about p{max-width:52ch;margin:0 auto 1rem;}
+
+  .gallery{padding:1rem 6vw 4rem;}
+  .gallery h2{font-family:"Fraunces",serif;font-weight:400;font-size:1.8rem;text-align:center;margin:0 0 2.5rem;}
+  .scatter{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:3rem 2.5rem;
+    max-width:1040px;
+    margin:0 auto;
+  }
+  .scatter .polaroid{padding:14px 14px 38px;margin:0;}
+  .scatter .polaroid .ph{width:250px;aspect-ratio:4/5;font-size:11px;}
+  .scatter .polaroid:nth-child(1){transform:rotate(-3deg);}
+  .scatter .polaroid:nth-child(2){transform:rotate(2deg) translateY(10px);}
+  .scatter .polaroid:nth-child(3){transform:rotate(-1.5deg) translateY(-6px);}
+  .scatter .polaroid:nth-child(4){transform:rotate(3deg) translateY(14px);}
+  .scatter .polaroid:nth-child(5){transform:rotate(-2.5deg);}
+  figcaption{font-family:"Corinthia",cursive;font-size:1.3rem;color:var(--ink);text-align:center;margin-top:4px;}
+
+  .connect{text-align:center;padding:1rem 6vw 3rem;font-size:0.85rem;color:var(--blue);}
+  .connect a{color:var(--blue);text-decoration:none;margin:0 0.8rem;}
+  .connect span{color:var(--muted);}
+  footer{text-align:center;padding:1.5rem 6vw 3rem;color:var(--muted);font-size:0.78rem;}
+</style>
+</head>
+<body>
+  <header><div class="wordmark">Afedia</div></header>
+
+  <section class="hero">
+    <div class="polaroid"><div class="ph">photograph — portrait</div></div>
+    <h1>Glory</h1>
+    <p>A little corner of the internet, built around one favorite person.</p>
+  </section>
+
+  <section class="about center">
+    <p class="eyebrow">A few words</p>
+    <p>Quick to laugh, quicker to notice when something's beautiful — and always chasing good light for a photo of her own. This page is a small, standing tribute to her.</p>
+  </section>
+
+  <section class="gallery">
+    <h2>A few of my favorites</h2>
+    <div class="scatter">
+      <figure class="polaroid"><div class="ph">photo</div></figure>
+      <figure class="polaroid"><div class="ph">photo</div></figure>
+      <figure class="polaroid"><div class="ph">photo</div></figure>
+      <figure class="polaroid"><div class="ph">photo</div></figure>
+      <figure class="polaroid"><div class="ph">photo</div></figure>
+    </div>
+  </section>
+
+  <section class="connect">
+    <a href="#">Instagram</a><span>·</span><a href="#">TikTok</a><span>·</span><a href="#">Facebook</a>
+  </section>
+  <footer>A small site, made with care.</footer>
+</body>
+</html>
