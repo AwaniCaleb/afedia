@@ -372,6 +372,15 @@ footer p {
 	pointer-events: none;
 	z-index: -1;
 	overflow: hidden;
+	/* contain:paint strictly clips all descendant painting — including the
+	   .light shapes' blur filter — to this box, and isolation:isolate forces
+	   a separate stacking/compositing context. Both are defensive against a
+	   real GPU-compositing bug class where a filter on animated children of
+	   a fixed, negative-z-index layer can bleed across the whole viewport,
+	   especially with other elements animating concurrently (the polaroids'
+	   idle sway) — overflow:hidden alone doesn't reliably prevent this. */
+	contain: paint;
+	isolation: isolate;
 }
 
 .light {
