@@ -38,6 +38,31 @@
 	}
 }
 
+/* ---- Dark mode manual override (v6.1) ----
+   A visitor whose system default they'd rather not see needs a way out —
+   these classes on <html> (set by main.js from a saved localStorage choice)
+   win over prefers-color-scheme by specificity alone (html.dark/html.light
+   is one type-selector point more specific than the bare :root the media
+   query targets), regardless of source order. No class present at all =
+   still the v6 automatic behavior, unchanged. */
+html.dark {
+	--bg: #241E1A;
+	--ink: #F3EAE0;
+	--muted: #B5A190;
+	--blue: #9BB3D1;
+	--frame: #FAF3E9;
+	--frame-shadow: rgba(0, 0, 0, 0.5);
+}
+
+html.light {
+	--bg: #FBF6F1;
+	--ink: #332A26;
+	--muted: #A4948A;
+	--blue: #7C93B5;
+	--frame: #FFFFFF;
+	--frame-shadow: rgba(51, 42, 38, 0.12);
+}
+
 * {
 	box-sizing: border-box;
 }
@@ -377,5 +402,100 @@ footer p {
 	100% {
 		transform: translate(0, 0) rotate(0deg);
 		opacity: 0.35;
+	}
+}
+
+/* ---- Idle sway (v8) — gentle continuous drift on every polaroid ----
+   Applied to .tilt-wrap, not .polaroid: the .polaroid's own `transform` is
+   already actively managed by the scroll-stagger entrance and the 3D
+   hover-tilt (both v5) — a third animation on that same property/element
+   would fight those for control. .tilt-wrap has no transform of its own
+   otherwise, so animating it composes cleanly with both existing effects. */
+.tilt-wrap {
+	animation: sway 6s ease-in-out infinite;
+}
+
+@keyframes sway {
+
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+
+	50% {
+		transform: translateY(-6px);
+	}
+}
+
+/* ---- Dark mode toggle (v6.1) ----
+   Restyled from the pre-redesign repo's fixed bottom-right .theme-toggle to
+   match the current palette. Icon visibility is pure CSS across all three
+   states (explicit dark, explicit light, no override → follow system) —
+   main.js only ever needs to add/remove the html.dark/html.light class. */
+.theme-toggle {
+	position: fixed;
+	bottom: 1.5rem;
+	right: 1.5rem;
+	z-index: 50;
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+	background: var(--frame);
+	border: 1px solid var(--blue);
+	color: var(--blue);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	box-shadow: 0 10px 24px var(--frame-shadow);
+	transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.theme-toggle:hover {
+	transform: scale(1.08);
+	background: var(--blue);
+	color: var(--bg);
+}
+
+.theme-toggle svg {
+	width: 20px;
+	height: 20px;
+}
+
+/* Default assumption (no info yet): light, so show the moon (click => dark) */
+.theme-toggle .sun {
+	display: none;
+}
+
+.theme-toggle .moon {
+	display: block;
+}
+
+/* Explicit override always wins, in either direction */
+html.dark .theme-toggle .sun {
+	display: block;
+}
+
+html.dark .theme-toggle .moon {
+	display: none;
+}
+
+html.light .theme-toggle .sun {
+	display: none;
+}
+
+html.light .theme-toggle .moon {
+	display: block;
+}
+
+/* No explicit override: mirror the system preference, same as the page itself */
+@media (prefers-color-scheme: dark) {
+
+	html:not(.light):not(.dark) .theme-toggle .sun {
+		display: block;
+	}
+
+	html:not(.light):not(.dark) .theme-toggle .moon {
+		display: none;
 	}
 }

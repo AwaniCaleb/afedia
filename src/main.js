@@ -1,14 +1,40 @@
 // The "soft & intimate" redesign (see docs/afedia-redesign-build-brief.md) is
-// mostly static markup, with three small interactive pieces added across the
-// v4/v5 passes: the footer's "Connect" modal, a 3D hover tilt on every
-// polaroid, and a scroll-stagger entrance for gallery/moments grids.
+// mostly static markup, with a few small interactive pieces added across the
+// v4/v5/v6.1 passes: the footer's "Connect" modal, a 3D hover tilt on every
+// polaroid, a scroll-stagger entrance for gallery/moments grids, and the
+// dark-mode toggle's click handling (the FOUC-avoiding part of that — reading
+// localStorage and setting the class before first paint — runs earlier, in a
+// blocking inline <script> in index.html's <head>, not here).
 // oloigbe.html doesn't load this file — it stays self-contained and has its
-// own inline copy of the polaroid motion logic (no Connect modal there).
+// own inline copy of all of this (no Connect modal there).
 document.addEventListener('DOMContentLoaded', () => {
 	initConnectModal();
 	initPolaroidTilt();
 	initScrollStagger();
+	initThemeToggle();
 });
+
+// Dark mode toggle (v6.1). The initial class (if any saved choice exists)
+// is already applied by the inline <head> script by the time this runs —
+// this only wires up the click, flipping between explicit 'dark'/'light'
+// and persisting the choice. If no choice is saved yet, "current mode" is
+// read from the system preference so the first click moves in the right
+// direction rather than assuming light.
+function initThemeToggle() {
+	const KEY = 'theme';
+	const toggle = document.getElementById('themeToggle');
+	if (!toggle) return;
+	const root = document.documentElement;
+
+	toggle.addEventListener('click', () => {
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		const isDark = root.classList.contains('dark') || (!root.classList.contains('light') && prefersDark);
+		const next = isDark ? 'light' : 'dark';
+		root.classList.remove('dark', 'light');
+		root.classList.add(next);
+		localStorage.setItem(KEY, next);
+	});
+}
 
 function initConnectModal() {
 	const trigger = document.getElementById('connectTrigger');

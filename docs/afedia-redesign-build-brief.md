@@ -113,6 +113,13 @@ Add this to both `src/style.css` (public site) and the private page's own `<styl
 
 Design intent, so this doesn't get reinterpreted: this should feel like flipping through the same photo album at night by lamplight, not like a different, colder site. That's why the dark background is a warm espresso-brown rather than a cold black or gray, and the polaroid frames stay a warm off-white (like real photo paper) rather than going dark themselves. The blue accent is a touch lighter in dark mode for contrast against the darker background. Everything else (fonts, layout, motion effects) stays identical between modes — only the color variables change.
 
+### Update: manual override needed (v6.1)
+
+Automatic-only turned out to be a real gap: a visitor whose system defaults to dark has no way to see the light version if they'd prefer it, and vice versa. **Add back a small toggle button** (reuse the original repo's `.theme-toggle` — fixed bottom-right circular button — as a styling starting point, restyled to match the current palette) that lets the visitor explicitly override the auto-detected mode. Behavior:
+- On load, check `localStorage` for an explicit saved preference. If present, apply it (as a class on `<html>`, e.g. `html.dark` / `html.light`, with higher specificity than the `prefers-color-scheme` media query so it wins when set).
+- If no saved preference exists yet, fall back to the automatic `prefers-color-scheme` behavior from v6 above — this is still the sensible default for first-time visitors.
+- Clicking the toggle sets an explicit class and saves the choice to `localStorage`, same pattern as the original site's old theme toggle had before the redesign.
+
 ---
 
 ## AMBIENT SHAPES PASS (v7) — floating background shapes, whole-page, both public and private pages
@@ -170,6 +177,26 @@ The six shapes, each in its own `.light` div inside `.ambient-field`, spread acr
 Two personal touches worth preserving exactly, not simplifying away: the musical note (she's a chorister) and the crown (her name is Glory — ties to "GLORY REIGN" on one of her own photos). Don't swap these for generic alternatives.
 
 The `z-index:-1` on `.ambient-field` is intentional and load-bearing — it must render above the page's base background color but behind all normal page content (text, polaroids, buttons). If anything on the page ends up with its own explicit `z-index`, double check the shapes still sit behind it correctly.
+
+---
+
+## IDLE SWAY PASS (v8) — gentle continuous drift on every polaroid, site-wide
+
+This was demoed and discussed earlier but never confirmed in writing, so it was correctly not built — adding it now as an explicit spec. Every polaroid (hero and grid photos, both pages) should gently drift a few pixels up and down on a slow, continuous, staggered loop, independent of scroll or mouse interaction — a quiet sense of motion even when the visitor isn't doing anything.
+
+**Important: apply this animation to the `.tilt-wrap` wrapper, not the `.polaroid` element itself.** The `.polaroid` element's `transform` is already actively managed by both the scroll-stagger entrance (v5) and the 3D hover-tilt (v5) — stacking a third CSS animation on that same property on the same element will cause visual glitches as they fight for control. Since hover-tilt only ever sets `transform` on the inner `.polaroid`, animating the outer `.tilt-wrap`'s `transform` instead composes cleanly with both existing effects with zero conflict.
+
+```css
+.tilt-wrap{
+  animation: sway 6s ease-in-out infinite;
+}
+@keyframes sway{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+}
+```
+
+Stagger it per photo so they never move in sync — vary `animation-delay` (e.g. 0s, -2s, -4.5s...) and optionally `animation-duration` (roughly 5.5s–7s) per item, similar to the staggering pattern already used for the ambient shapes and scroll-entrance. Every `.tilt-wrap` on both pages should get this, including both hero photos.
 
 ---
 
