@@ -22,6 +22,22 @@
 	--frame-shadow: rgba(51, 42, 38, 0.12);
 }
 
+/* ---- Dark mode (v6) — automatic via prefers-color-scheme, no toggle ----
+   Intent: the same photo album at night by lamplight, not a colder/different
+   site — warm espresso-brown, not black/gray; polaroid frames stay warm
+   off-white rather than going dark. Only these color variables change;
+   fonts, layout, and motion effects stay identical between modes. */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #241E1A;
+		--ink: #F3EAE0;
+		--muted: #B5A190;
+		--blue: #9BB3D1;
+		--frame: #FAF3E9;
+		--frame-shadow: rgba(0, 0, 0, 0.5);
+	}
+}
+
 * {
 	box-sizing: border-box;
 }
@@ -317,4 +333,49 @@ footer p {
 .icon-row svg {
 	width: 20px;
 	height: 20px;
+}
+
+/* ---- Ambient shapes (v7) ----
+   Fixed full-viewport layer, behind all content. z-index:-1 is load-bearing:
+   it must sit above the plain body background but below every normal-flow
+   page element — if anything gets its own z-index later, double check the
+   shapes still sit behind it (.modal-backdrop's z-index:50 is already fine,
+   since it's a separate stacking context above the page, not in its flow). */
+.ambient-field {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: -1;
+	overflow: hidden;
+}
+
+.light {
+	position: absolute;
+	animation: drift 15s ease-in-out infinite;
+	filter: blur(5px);
+	opacity: 0.5;
+	color: var(--blue);
+}
+
+.light svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+@keyframes drift {
+	0% {
+		transform: translate(0, 0) rotate(0deg);
+		opacity: 0.35;
+	}
+
+	50% {
+		transform: translate(-16px, -26px) rotate(8deg);
+		opacity: 0.7;
+	}
+
+	100% {
+		transform: translate(0, 0) rotate(0deg);
+		opacity: 0.35;
+	}
 }

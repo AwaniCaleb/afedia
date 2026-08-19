@@ -92,6 +92,87 @@ Both effects should feel subtle and quick (short durations, no bounce/overshoot)
 
 ---
 
+## DARK MODE PASS (v6) — automatic, no visible toggle
+
+A dark variant is approved, but **it must not have a visible toggle button or any manual switch UI on the page.** Instead, implement it purely via the `prefers-color-scheme` media query, so it activates automatically based on the visitor's own system/browser setting, with zero added interface elements. No JavaScript, no localStorage, no button.
+
+Add this to both `src/style.css` (public site) and the private page's own `<style>` block:
+
+```css
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #241E1A;
+    --ink: #F3EAE0;
+    --muted: #B5A190;
+    --blue: #9BB3D1;
+    --frame: #FAF3E9;
+    --frame-shadow: rgba(0,0,0,0.5);
+  }
+}
+```
+
+Design intent, so this doesn't get reinterpreted: this should feel like flipping through the same photo album at night by lamplight, not like a different, colder site. That's why the dark background is a warm espresso-brown rather than a cold black or gray, and the polaroid frames stay a warm off-white (like real photo paper) rather than going dark themselves. The blue accent is a touch lighter in dark mode for contrast against the darker background. Everything else (fonts, layout, motion effects) stays identical between modes — only the color variables change.
+
+---
+
+## AMBIENT SHAPES PASS (v7) — floating background shapes, whole-page, both public and private pages
+
+Six small blurred SVG shapes drift slowly in the blue accent color, positioned on a fixed layer that sits behind all page content and covers the full viewport — so they stay softly visible no matter where the visitor has scrolled to, not confined to one section. Applies to both `index.html` and `oloigbe.html`.
+
+Wrapper (place as the first element inside `<body>`, once per page):
+
+```css
+.ambient-field{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden;}
+.light{
+  position:absolute;
+  animation:drift 15s ease-in-out infinite;
+  filter:blur(5px);opacity:0.5;color:var(--blue);
+}
+.light svg{display:block;width:100%;height:100%;}
+@keyframes drift{
+  0%{transform:translate(0,0) rotate(0deg);opacity:0.35;}
+  50%{transform:translate(-16px,-26px) rotate(8deg);opacity:0.7;}
+  100%{transform:translate(0,0) rotate(0deg);opacity:0.35;}
+}
+```
+
+The six shapes, each in its own `.light` div inside `.ambient-field`, spread across varied positions on the viewport (not clustered — spread roughly one per screen quadrant plus two more), with staggered `animation-duration` (13s–19s) and `animation-delay` (0 to -11s) so they never move in sync. Sizes range roughly 40–64px. Exact markup:
+
+```html
+<div class="ambient-field">
+  <!-- flower -->
+  <div class="light" style="width:64px;height:64px;left:8%;top:12%;animation-duration:17s;">
+    <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="6" r="4"/><circle cx="18" cy="10.5" r="4"/><circle cx="15.7" cy="17.5" r="4"/><circle cx="8.3" cy="17.5" r="4"/><circle cx="6" cy="10.5" r="4"/><circle cx="12" cy="12" r="3.2"/></svg>
+  </div>
+  <!-- heart -->
+  <div class="light" style="width:48px;height:48px;left:82%;top:22%;animation-duration:13s;animation-delay:-3s;">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C12 21 4 14.5 4 8.7C4 5.5 6.5 3 9.6 3C11 3 12 4 12 4C12 4 13 3 14.4 3C17.5 3 20 5.5 20 8.7C20 14.5 12 21 12 21Z"/></svg>
+  </div>
+  <!-- ring -->
+  <div class="light" style="width:56px;height:56px;left:20%;top:55%;animation-duration:19s;animation-delay:-8s;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><circle cx="12" cy="12" r="7"/></svg>
+  </div>
+  <!-- star -->
+  <div class="light" style="width:40px;height:40px;left:70%;top:65%;animation-duration:14s;animation-delay:-5s;">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.1L12 17.3 5.7 21.3l1.7-7.1L2 9.5l7.1-.6L12 2z"/></svg>
+  </div>
+  <!-- musical note -->
+  <div class="light" style="width:46px;height:46px;left:45%;top:8%;animation-duration:16s;animation-delay:-11s;">
+    <svg viewBox="0 0 24 24" fill="currentColor"><ellipse cx="8" cy="18" rx="3.2" ry="2.4" transform="rotate(-15 8 18)"/><rect x="10.5" y="4" width="2" height="14.5"/><path d="M12.5 4c3.2 0 5.5 2.1 5.5 5.2-2.1-1.1-4.2-1.1-5.5-.2z"/></svg>
+  </div>
+  <!-- crown -->
+  <div class="light" style="width:50px;height:50px;left:88%;top:80%;animation-duration:18s;animation-delay:-6s;">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8z"/></svg>
+  </div>
+</div>
+```
+
+Two personal touches worth preserving exactly, not simplifying away: the musical note (she's a chorister) and the crown (her name is Glory — ties to "GLORY REIGN" on one of her own photos). Don't swap these for generic alternatives.
+
+The `z-index:-1` on `.ambient-field` is intentional and load-bearing — it must render above the page's base background color but behind all normal page content (text, polaroids, buttons). If anything on the page ends up with its own explicit `z-index`, double check the shapes still sit behind it correctly.
+
+---
+
 ## 0. Concept (unchanged from v2, still correct)
 
 "Afedia" is Glory's surname. The site is a tribute gallery about her, built by someone who admires her — not a photography portfolio, not written in first person as "I'm a passionate photographer." She isn't a photographer; she likes taking photos of herself and of sceneries she finds beautiful. The public site showcases her. The private page (`oloigbe.html`) is the personal letter plus photos of the two of them together.
