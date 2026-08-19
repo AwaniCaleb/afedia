@@ -39,12 +39,12 @@
 }
 
 /* ---- Dark mode manual override (v6.1) ----
-   A visitor whose system default they'd rather not see needs a way out —
-   these classes on <html> (set by main.js from a saved localStorage choice)
-   win over prefers-color-scheme by specificity alone (html.dark/html.light
-   is one type-selector point more specific than the bare :root the media
-   query targets), regardless of source order. No class present at all =
-   still the v6 automatic behavior, unchanged. */
+   A visitor whose system default they'd rather not see needs a way out.
+   html.dark/html.light are added by main.js (and, on first paint, by the
+   blocking inline script in <head>) from a saved localStorage choice.
+   Higher specificity than the plain :root above (element+class beats a
+   pseudo-class), so this wins regardless of source order or system
+   preference. */
 html.dark {
 	--bg: #241E1A;
 	--ink: #F3EAE0;
@@ -67,12 +67,22 @@ html.light {
 	box-sizing: border-box;
 }
 
+/* ---- Smooth light/dark toggle transition (v9) ----
+   Without this, switching modes via the manual toggle snaps every themed
+   color instantly. Applied per-element (an inherited `color` transition on
+   body alone doesn't smooth a descendant's own computed color — each
+   element that shows a theme-dependent color needs its own transition).
+   Where an element already declares its own transition for something else,
+   the color properties are added to that same list rather than a second
+   `transition` declaration, which would overwrite the first instead of
+   merging with it. */
 body {
 	margin: 0;
 	background: var(--bg);
 	color: var(--ink);
 	font-family: "Inter", sans-serif;
 	line-height: 1.75;
+	transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 .center {
@@ -93,6 +103,7 @@ header {
 	font-family: "Corinthia", cursive;
 	font-size: 4.4rem;
 	color: var(--blue);
+	transition: color 0.4s ease;
 }
 
 /* ---- Hero ---- */
@@ -125,7 +136,13 @@ header {
 }
 
 .tilt-wrap .polaroid {
-	transition: opacity 0.15s ease-out, transform 0.15s ease-out, box-shadow 0.15s ease-out;
+	/* background-color (the --frame swap) added at the v9 theme-transition
+	   speed; box-shadow stays at its existing 0.15s — it's already doing
+	   double duty for the hover effect below, and slowing it to 0.4s would
+	   make hover feel sluggish. A duplicate box-shadow entry at a second
+	   duration isn't an option here: with the same property listed twice,
+	   only the last one applies, not both. */
+	transition: opacity 0.15s ease-out, transform 0.15s ease-out, box-shadow 0.15s ease-out, background-color 0.4s ease;
 	cursor: pointer;
 }
 
@@ -159,12 +176,14 @@ img.ph {
 	font-size: 5rem;
 	margin: 0 0 0.3rem;
 	color: var(--blue);
+	transition: color 0.4s ease;
 }
 
 .hero p {
 	color: var(--muted);
 	font-size: 1rem;
 	margin: 0;
+	transition: color 0.4s ease;
 }
 
 /* ---- About ---- */
@@ -178,6 +197,7 @@ img.ph {
 	font-size: 2.6rem;
 	color: var(--blue);
 	margin: 0 0 1rem;
+	transition: color 0.4s ease;
 }
 
 .about p {
@@ -261,6 +281,7 @@ footer {
 	padding: 2.5rem 6vw 3rem;
 	color: var(--muted);
 	font-size: 0.85rem;
+	transition: color 0.4s ease;
 }
 
 footer p {
@@ -278,6 +299,7 @@ footer p {
 	padding: 0.5rem 1rem;
 	border: 1px solid var(--blue);
 	border-radius: 999px;
+	transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
 .connect-trigger:hover {
@@ -309,6 +331,7 @@ footer p {
 	max-width: 320px;
 	width: 100%;
 	position: relative;
+	transition: background-color 0.4s ease;
 }
 
 .modal-close {
@@ -321,6 +344,7 @@ footer p {
 	color: var(--muted);
 	cursor: pointer;
 	line-height: 1;
+	transition: color 0.4s ease;
 }
 
 .modal p.title {
@@ -329,6 +353,7 @@ footer p {
 	font-size: 1.1rem;
 	margin: 0 0 1.5rem;
 	color: var(--ink);
+	transition: color 0.4s ease;
 }
 
 .icon-row {
@@ -347,7 +372,7 @@ footer p {
 	justify-content: center;
 	color: var(--blue);
 	text-decoration: none;
-	transition: background 0.2s, color 0.2s;
+	transition: background 0.2s, color 0.2s, border-color 0.4s ease;
 }
 
 .icon-row a:hover {
@@ -360,31 +385,37 @@ footer p {
 	height: 20px;
 }
 
-/* ---- Ambient shapes (v7, repositioned) ----
-   position:absolute (not fixed) spanning the full document height, not just
-   one viewport — the shapes now scroll with the page instead of staying
-   pinned on screen. This trades "always visible" for avoiding the
-   fixed-positioning + filter + animation combination entirely: real headless
-   Firefox testing (not just Chromium, which never reproduced the reported
-   bug) confirmed this exact combination — a `filter` on animated children of
-   a `position:fixed; z-index:-1` layer, stacked with several other
-   concurrently-animating elements (every polaroid's idle sway) — made the
-   page hang/never settle, corroborating the whole-page blur/sway report
-   rather than it being an isolated edge case. z-index:-1 is still
-   load-bearing: above the plain body background, below every normal-flow
-   page element (.modal-backdrop's z-index:50 is unaffected, separate
-   stacking context above the page, not in its flow). */
+/* ---- Ambient shapes (v7) ----
+   Fixed full-viewport layer, exactly as originally specified — the
+   position:absolute detour (and the contain:paint/isolation:isolate added
+   alongside it) was chasing the class-collision bug under a since-disproven
+   theory (see the .ambient-shape comment below) and is no longer needed now
+   that the real cause is fixed. z-index:-1 is load-bearing: above the plain
+   body background, below every normal-flow page element (.modal-backdrop's
+   z-index:50 is unaffected, separate stacking context above the page, not
+   in its flow). */
 .ambient-field {
-	position: absolute;
+	position: fixed;
 	inset: 0;
 	pointer-events: none;
 	z-index: -1;
 	overflow: hidden;
-	contain: paint;
-	isolation: isolate;
 }
 
-.light {
+/* Named .ambient-shape, not .light — the real cause of the whole-page
+   blur+sway bug reported after v7/v8 was this class originally being named
+   `.light`, which collided with html.light (the v6.1 manual dark-mode
+   override class further down this file, added to <html> by main.js).
+   `filter: blur(5px)` and `animation: drift` meant for these six small
+   decorative divs were matching <html> itself in light mode, blurring and
+   drift-animating the entire page — confirmed by testing that the bug is
+   deterministic and 100% correlated with html.light specifically (present
+   even on a cold load with no click at all, never present in html.dark),
+   with no dependency on Firefox, click timing, or how the six color custom
+   properties are mutated — all things earlier investigation wrongly
+   suspected before this class name collision was found. Never name a
+   helper class after a value that could also end up on <html>. */
+.ambient-shape {
 	position: absolute;
 	animation: drift 15s ease-in-out infinite;
 	filter: blur(5px);
@@ -392,7 +423,7 @@ footer p {
 	color: var(--blue);
 }
 
-.light svg {
+.ambient-shape svg {
 	display: block;
 	width: 100%;
 	height: 100%;
@@ -458,7 +489,7 @@ footer p {
 	justify-content: center;
 	cursor: pointer;
 	box-shadow: 0 10px 24px var(--frame-shadow);
-	transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+	transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .theme-toggle:hover {

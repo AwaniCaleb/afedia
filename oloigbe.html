@@ -5,11 +5,16 @@
 <!-- Dark mode override (v6.1): applies any saved explicit choice before
      first paint, so there's no flash of the wrong theme. Blocking script,
      not deferred — the click handler that sets this value lives in the
-     inline <script> near the bottom of <body>. -->
+     inline <script> near the bottom of <body>. The actual color values
+     live on html.dark/html.light in the <style> block below (higher
+     specificity than :root, so this class alone is enough) — this script
+     only needs to add the class. -->
 <script>
   (function () {
     var saved = localStorage.getItem('theme');
-    if (saved === 'dark' || saved === 'light') document.documentElement.classList.add(saved);
+    if (saved === 'dark' || saved === 'light') {
+      document.documentElement.classList.add(saved);
+    }
   })();
 </script>
 <meta charset="UTF-8">
@@ -54,17 +59,38 @@
     }
   }
   /* ---- Dark mode manual override (v6.1) ----
-     html.dark/html.light (set by the inline script below, from a saved
-     localStorage choice) win over prefers-color-scheme by specificity alone.
-     No class present = still the v6 automatic behavior, unchanged. */
+     A visitor whose system default they'd rather not see needs a way out.
+     html.dark/html.light are added by the inline script below (and, on
+     first paint, by the blocking <head> script) from a saved localStorage
+     choice. Higher specificity than the plain :root above (element+class
+     beats a pseudo-class), so this wins regardless of source order or
+     system preference. */
   html.dark{
-    --bg:#241E1A;--ink:#F3EAE0;--muted:#B5A190;--blue:#9BB3D1;--frame:#FAF3E9;--frame-shadow:rgba(0,0,0,0.5);
+    --bg:#241E1A;
+    --ink:#F3EAE0;
+    --muted:#B5A190;
+    --blue:#9BB3D1;
+    --frame:#FAF3E9;
+    --frame-shadow:rgba(0,0,0,0.5);
   }
   html.light{
-    --bg:#FBF6F1;--ink:#332A26;--muted:#A4948A;--blue:#7C93B5;--frame:#FFFFFF;--frame-shadow:rgba(51,42,38,0.12);
+    --bg:#FBF6F1;
+    --ink:#332A26;
+    --muted:#A4948A;
+    --blue:#7C93B5;
+    --frame:#FFFFFF;
+    --frame-shadow:rgba(51,42,38,0.12);
   }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;line-height:1.8;}
+  /* ---- Smooth light/dark toggle transition (v9) ----
+     Without this, switching modes via the manual toggle snaps every themed
+     color instantly. Applied per-element (an inherited `color` transition
+     on body alone doesn't smooth a descendant's own computed color). Where
+     an element already declares its own transition for something else, the
+     color properties are added to that same list rather than a second
+     `transition` declaration, which would overwrite the first instead of
+     merging with it. */
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;line-height:1.8;transition:background-color 0.4s ease, color 0.4s ease;}
   .center{max-width:600px;margin:0 auto;text-align:center;padding:0 6vw;}
 
   .hero{padding:4rem 6vw 3rem;text-align:center;}
@@ -78,12 +104,15 @@
     transform:translateY(var(--ty,0px)) rotate(var(--rot,0deg));
     margin-bottom:1.5rem;
   }
-  .polaroid .ph{width:300px;aspect-ratio:4/5;background:#EFE6DC;display:flex;align-items:center;justify-content:center;color:var(--muted);font-style:italic;font-size:12px;text-align:center;padding:1rem;}
+  .polaroid .ph{width:300px;aspect-ratio:4/5;background:#EFE6DC;display:flex;align-items:center;justify-content:center;color:var(--muted);font-style:italic;font-size:12px;text-align:center;padding:1rem;transition:color 0.4s ease;}
   img.ph{display:block;padding:0;object-fit:cover;}
 
   /* ---- Motion: 3D hover tilt, every polaroid (v5) ---- */
   .tilt-wrap{display:inline-block;perspective:800px;}
-  .tilt-wrap .polaroid{transition:opacity 0.15s ease-out, transform 0.15s ease-out, box-shadow 0.15s ease-out;cursor:pointer;}
+  /* background-color (the --frame swap, v9) added at the theme-transition
+     speed; box-shadow stays at its existing 0.15s for the hover effect
+     below — see the matching note in the public site's src/style.css. */
+  .tilt-wrap .polaroid{transition:opacity 0.15s ease-out, transform 0.15s ease-out, box-shadow 0.15s ease-out, background-color 0.4s ease;cursor:pointer;}
   .tilt-wrap .polaroid:hover{box-shadow:0 22px 40px var(--frame-shadow);}
   .hero p.caption{
     font-family:"Corinthia",cursive;
@@ -92,6 +121,7 @@
     color:var(--blue);
     margin:0 auto;
     max-width:480px;
+    transition:color 0.4s ease;
   }
 
   .letter{padding:2rem 6vw 4rem;}
@@ -106,7 +136,7 @@
   .letter-inner p.sig{margin-top:2rem;}
 
   .moments{padding:1rem 6vw 4rem;}
-  .moments h2{font-family:"Fraunces",serif;font-weight:400;font-style:italic;font-size:1.5rem;text-align:center;margin:0 0 2.5rem;color:var(--ink);}
+  .moments h2{font-family:"Fraunces",serif;font-weight:400;font-style:italic;font-size:1.5rem;text-align:center;margin:0 0 2.5rem;color:var(--ink);transition:color 0.4s ease;}
   .scatter{
     display:grid;
     grid-template-columns:repeat(2,1fr);
@@ -129,22 +159,30 @@
   .scatter .polaroid{opacity:0;transform:translateY(40px) rotate(0deg);}
   .scatter .polaroid.in-view{opacity:1;}
 
-  .end{text-align:center;padding:2rem 6vw 4rem;color:var(--blue);font-family:"Corinthia",cursive;font-size:2.1rem;}
+  .end{text-align:center;padding:2rem 6vw 4rem;color:var(--blue);font-family:"Corinthia",cursive;font-size:2.1rem;transition:color 0.4s ease;}
 
-  /* ---- Ambient shapes (v7, repositioned) ----
-     position:absolute (not fixed) spanning the full document height, not
-     just one viewport — the shapes now scroll with the page instead of
-     staying pinned on screen. Trades "always visible" for avoiding the
-     fixed-positioning + filter + animation combination entirely: real
-     headless Firefox testing (not just Chromium, which never reproduced
-     the reported bug) confirmed this exact combination — a filter on
-     animated children of a fixed, negative-z-index layer, alongside several
-     other concurrently-animating elements (every polaroid's idle sway) —
-     made the page hang/never settle, corroborating the whole-page
-     blur/sway report rather than it being an isolated edge case. */
-  .ambient-field{position:absolute;inset:0;pointer-events:none;z-index:-1;overflow:hidden;contain:paint;isolation:isolate;}
-  .light{position:absolute;animation:drift 15s ease-in-out infinite;filter:blur(5px);opacity:0.5;color:var(--blue);}
-  .light svg{display:block;width:100%;height:100%;}
+  /* ---- Ambient shapes (v7) ----
+     Fixed full-viewport layer, exactly as originally specified — the
+     position:absolute detour (and the contain:paint/isolation:isolate added
+     alongside it) was chasing the class-collision bug under a since-disproven
+     theory (see the .ambient-shape comment below) and is no longer needed
+     now that the real cause is fixed. */
+  .ambient-field{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden;}
+  /* Named .ambient-shape, not .light — the real cause of the whole-page
+     blur+sway bug reported after v7/v8 was this class originally being
+     named `.light`, which collided with html.light (the v6.1 manual
+     dark-mode override class added to <html> below). `filter: blur(5px)`
+     and `animation: drift` meant for these six small decorative divs were
+     matching <html> itself in light mode, blurring and drift-animating the
+     entire page. Confirmed deterministic and 100% correlated with
+     html.light — present even on a cold load with no click at all, never
+     present in html.dark — with no dependency on Firefox, click timing, or
+     how the color custom properties are set, all of which earlier
+     investigation wrongly suspected before this class name collision was
+     found. Never name a helper class after a value that could also end up
+     on <html>. */
+  .ambient-shape{position:absolute;animation:drift 15s ease-in-out infinite;filter:blur(5px);opacity:0.5;color:var(--blue);}
+  .ambient-shape svg{display:block;width:100%;height:100%;}
   @keyframes drift{
     0%{transform:translate(0,0) rotate(0deg);opacity:0.35;}
     50%{transform:translate(-16px,-26px) rotate(8deg);opacity:0.7;}
@@ -169,7 +207,7 @@
     background:var(--frame);border:1px solid var(--blue);color:var(--blue);
     display:flex;align-items:center;justify-content:center;cursor:pointer;
     box-shadow:0 10px 24px var(--frame-shadow);
-    transition:transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    transition:transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.4s ease, box-shadow 0.4s ease;
   }
   .theme-toggle:hover{transform:scale(1.08);background:var(--blue);color:var(--bg);}
   .theme-toggle svg{width:20px;height:20px;}
@@ -192,27 +230,27 @@
        "GLORY REIGN" gallery photo) are deliberate, not generic filler. -->
   <div class="ambient-field">
     <!-- flower -->
-    <div class="light" style="width:64px;height:64px;left:8%;top:12%;animation-duration:17s;">
+    <div class="ambient-shape" style="width:64px;height:64px;left:8%;top:12%;animation-duration:17s;">
       <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="6" r="4"/><circle cx="18" cy="10.5" r="4"/><circle cx="15.7" cy="17.5" r="4"/><circle cx="8.3" cy="17.5" r="4"/><circle cx="6" cy="10.5" r="4"/><circle cx="12" cy="12" r="3.2"/></svg>
     </div>
     <!-- heart -->
-    <div class="light" style="width:48px;height:48px;left:82%;top:22%;animation-duration:13s;animation-delay:-3s;">
+    <div class="ambient-shape" style="width:48px;height:48px;left:82%;top:22%;animation-duration:13s;animation-delay:-3s;">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21C12 21 4 14.5 4 8.7C4 5.5 6.5 3 9.6 3C11 3 12 4 12 4C12 4 13 3 14.4 3C17.5 3 20 5.5 20 8.7C20 14.5 12 21 12 21Z"/></svg>
     </div>
     <!-- ring -->
-    <div class="light" style="width:56px;height:56px;left:20%;top:55%;animation-duration:19s;animation-delay:-8s;">
+    <div class="ambient-shape" style="width:56px;height:56px;left:20%;top:55%;animation-duration:19s;animation-delay:-8s;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><circle cx="12" cy="12" r="7"/></svg>
     </div>
     <!-- star -->
-    <div class="light" style="width:40px;height:40px;left:70%;top:65%;animation-duration:14s;animation-delay:-5s;">
+    <div class="ambient-shape" style="width:40px;height:40px;left:70%;top:65%;animation-duration:14s;animation-delay:-5s;">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.1L12 17.3 5.7 21.3l1.7-7.1L2 9.5l7.1-.6L12 2z"/></svg>
     </div>
     <!-- musical note -->
-    <div class="light" style="width:46px;height:46px;left:45%;top:8%;animation-duration:16s;animation-delay:-11s;">
+    <div class="ambient-shape" style="width:46px;height:46px;left:45%;top:8%;animation-duration:16s;animation-delay:-11s;">
       <svg viewBox="0 0 24 24" fill="currentColor"><ellipse cx="8" cy="18" rx="3.2" ry="2.4" transform="rotate(-15 8 18)"/><rect x="10.5" y="4" width="2" height="14.5"/><path d="M12.5 4c3.2 0 5.5 2.1 5.5 5.2-2.1-1.1-4.2-1.1-5.5-.2z"/></svg>
     </div>
     <!-- crown -->
-    <div class="light" style="width:50px;height:50px;left:88%;top:80%;animation-duration:18s;animation-delay:-6s;">
+    <div class="ambient-shape" style="width:50px;height:50px;left:88%;top:80%;animation-duration:18s;animation-delay:-6s;">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8z"/></svg>
     </div>
   </div>
@@ -275,6 +313,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       const themeToggle = document.getElementById('themeToggle');
       if (themeToggle) {
+        // The actual color values live on html.dark/html.light in the
+        // <style> block above — this only ever needs to touch the class.
         themeToggle.addEventListener('click', () => {
           const root = document.documentElement;
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;

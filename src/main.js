@@ -19,7 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // this only wires up the click, flipping between explicit 'dark'/'light'
 // and persisting the choice. If no choice is saved yet, "current mode" is
 // read from the system preference so the first click moves in the right
-// direction rather than assuming light.
+// direction rather than assuming light. The actual color values live on
+// html.dark/html.light in src/style.css — this only ever needs to touch
+// the class.
 function initThemeToggle() {
 	const KEY = 'theme';
 	const toggle = document.getElementById('themeToggle');
