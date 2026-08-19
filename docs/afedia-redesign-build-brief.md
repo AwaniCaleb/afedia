@@ -287,3 +287,13 @@ Leave this text editable/obvious in the source so the user can add a personal li
 - Exact filenames of every photo that features Glory, for the public gallery (CC should ask, not assume).
 - Real photos of the two of them together, for the private page's hero and "moments" section.
 - Any final personal touch the user wants to add to the letter before sending.
+
+---
+
+## POLISH PASS (v9) — three fixes
+
+**1. Revert ambient shapes to `position: fixed`.** Now that the real bug (the `.light` class-name collision with the theme toggle's `html.light`) is fixed and confirmed by the user in real Firefox, there's no remaining reason for `position: absolute`. That change was based on a since-disproven theory. Switch `.ambient-shape` back to `position: fixed; inset: 0;` so the shapes stay visible on screen while scrolling again, exactly as originally specified in the AMBIENT SHAPES PASS (v7) section above.
+
+**2. Fix the gallery photo set — this is an append, not a replace.** The public gallery should contain all 8 available solo photos: `8.jpg, 13.jpg, 14.jpg, 15.jpg, 17.jpg, 18.jpg, 19.jpg, 20.jpg`. The earlier instruction to use "only" 17–20 caused 8/13/14/15 to be dropped entirely instead of the two sets being combined — that was a wording mistake, not what the user wanted. `16.jpg` stays the dedicated hero photo, unchanged, still not duplicated in the grid.
+
+**3. Smooth the light/dark toggle transition.** Right now switching modes (via the manual toggle) snaps instantly. Add a CSS transition on the properties that actually change between modes — `background-color`, `color`, `border-color`, `box-shadow` — at roughly `0.4s ease`, applied to `body` and to any element whose color changes with the theme (`.polaroid`, headings, the wordmark, links/buttons). Where an element already has its own `transition` declared for something else (e.g. `.polaroid`'s hover-tilt transition, or anything touched by the sway/hover effects), add the color properties to that existing transition list rather than replacing it — a second `transition` declaration on the same element will overwrite the first, not merge with it.
