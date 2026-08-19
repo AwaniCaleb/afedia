@@ -360,25 +360,26 @@ footer p {
 	height: 20px;
 }
 
-/* ---- Ambient shapes (v7) ----
-   Fixed full-viewport layer, behind all content. z-index:-1 is load-bearing:
-   it must sit above the plain body background but below every normal-flow
-   page element — if anything gets its own z-index later, double check the
-   shapes still sit behind it (.modal-backdrop's z-index:50 is already fine,
-   since it's a separate stacking context above the page, not in its flow). */
+/* ---- Ambient shapes (v7, repositioned) ----
+   position:absolute (not fixed) spanning the full document height, not just
+   one viewport — the shapes now scroll with the page instead of staying
+   pinned on screen. This trades "always visible" for avoiding the
+   fixed-positioning + filter + animation combination entirely: real headless
+   Firefox testing (not just Chromium, which never reproduced the reported
+   bug) confirmed this exact combination — a `filter` on animated children of
+   a `position:fixed; z-index:-1` layer, stacked with several other
+   concurrently-animating elements (every polaroid's idle sway) — made the
+   page hang/never settle, corroborating the whole-page blur/sway report
+   rather than it being an isolated edge case. z-index:-1 is still
+   load-bearing: above the plain body background, below every normal-flow
+   page element (.modal-backdrop's z-index:50 is unaffected, separate
+   stacking context above the page, not in its flow). */
 .ambient-field {
-	position: fixed;
+	position: absolute;
 	inset: 0;
 	pointer-events: none;
 	z-index: -1;
 	overflow: hidden;
-	/* contain:paint strictly clips all descendant painting — including the
-	   .light shapes' blur filter — to this box, and isolation:isolate forces
-	   a separate stacking/compositing context. Both are defensive against a
-	   real GPU-compositing bug class where a filter on animated children of
-	   a fixed, negative-z-index layer can bleed across the whole viewport,
-	   especially with other elements animating concurrently (the polaroids'
-	   idle sway) — overflow:hidden alone doesn't reliably prevent this. */
 	contain: paint;
 	isolation: isolate;
 }
