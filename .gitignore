@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Debugging artifacts (e.g. the Firefox blur-bug investigation), not
+# meant to ship with the site
+public/assets/images/screenshots/tests/
